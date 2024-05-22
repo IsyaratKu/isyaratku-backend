@@ -1,0 +1,19 @@
+{
+  "name": "isyaratku-backend",
+  "version": "1.0.0",
+  "description": "This is a repository for IsyaratKu's backend APIs.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --coverage",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
