@@ -28,7 +28,10 @@ const serviceAccount = {
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
+    storageBucket:'user-pp-bucket'
 });
+
+const bucket = admin.storage().bucket();
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
