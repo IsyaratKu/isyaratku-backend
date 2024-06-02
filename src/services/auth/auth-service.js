@@ -173,8 +173,6 @@ class AuthService {
         const user = req.user;
         const { oldEmail, newEmail } = req.body;
 
-        console.log('Received change email request:', { oldEmail, newEmail, user });
-
         if (!user || !oldEmail || !newEmail) {
             return res.status(422).json({ error: "Invalid request" });
         }
@@ -200,31 +198,37 @@ class AuthService {
 
     async changePhotoProfile(req, res) {
         const user = req.user;
+    
         if (!user || !req.file) {
             return res.status(422).json({ error: "Invalid request" });
         }
-
+    
         try {
             const userRef = db.collection("users").doc(user.uid);
             const userData = (await userRef.get()).data();
             const oldPhotoURL = userData.url_photo;
-
+    
             // Upload new photo
-            const file = bucket.file(`profile_pics/${user.uid}_${req.file.originalname}`);
-            await file.save(req.file.buffer, { contentType: req.file.mimetype });
-
+            const fileName = `profile_pics/${user.uid}_${req.file.originalname}`;
+            const file = bucket.file(fileName);
+    
+            await file.save(req.file.buffer, {
+                contentType: req.file.mimetype,
+                predefinedAcl: 'publicRead'
+            });
+    
             // Get URL of new photo
-            const newPhotoURL = `https://storage.googleapis.com/${bucket.name}/${file.name}`;
-
+            const newPhotoURL = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+    
             // Update Firestore
             await userRef.update({ url_photo: newPhotoURL });
-
+    
             // Delete old photo if exists and is not empty or null
             if (oldPhotoURL && oldPhotoURL.trim() !== "") {
                 const oldFileName = oldPhotoURL.split('/').pop();
                 await bucket.file(`profile_pics/${oldFileName}`).delete();
             }
-
+    
             res.status(200).json({ message: "Photo profile updated successfully", url_photo: newPhotoURL });
         } catch (error) {
             console.error("Error updating photo profile:", error);
