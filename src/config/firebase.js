@@ -9,6 +9,7 @@ const {
     sendEmailVerification,
     sendPasswordResetEmail
 } = require("firebase/auth");
+const { getFirestore } = require('firebase-admin/firestore');
 
 
 const serviceAccount = {
@@ -46,6 +47,8 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
+const db = getFirestore();
+
 module.exports = {
     getAuth,
     createUserWithEmailAndPassword,
@@ -53,5 +56,6 @@ module.exports = {
     signOut,
     sendEmailVerification,
     sendPasswordResetEmail,
+    db,
     admin
 };
