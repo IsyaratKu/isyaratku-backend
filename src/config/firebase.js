@@ -29,7 +29,7 @@ const serviceAccount = {
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    storageBucket:'user-pp-bucket'
+    storageBucket:'product-dev-424307.appspot.com'
 });
 
 const bucket = admin.storage().bucket();
@@ -57,5 +57,6 @@ module.exports = {
     sendEmailVerification,
     sendPasswordResetEmail,
     db,
-    admin
+    admin,
+    bucket
 };
