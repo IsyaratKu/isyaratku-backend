@@ -7,7 +7,7 @@ const upload = multer({ storage:multer.memoryStorage()});
 
 router.post('/register', authService.register);
 router.post('/login', authService.login);
-router.post('/logout', authService.logout);
+router.post('/logout', verifyToken, authService.logout);
 router.post('/forgot-password', authService.resetPassword);
 router.get('/user-info', verifyToken, authService.getUserInfo);
 router.get('/leaderboard', authService.getAllUserScores);
