@@ -1,9 +1,9 @@
 # isyaratku-backend
 This is a repository for IsyaratKu's backend APIs.
 
-## Deployment
+## Development
 
-To deploy the IsyaratKu backend APIs, follow these steps:
+To develop the IsyaratKu backend APIs, follow these steps:
 
 1. Clone the repository:
 
@@ -32,19 +32,17 @@ To deploy the IsyaratKu backend APIs, follow these steps:
 5. Start the server:
 
     ```bash
-    npm start
+    npm run start
     ```
 
-6. The backend APIs should now be accessible at `http://localhost:3000`.
+6. The backend APIs should now be accessible at `http://localhost:5000`.
 
-## API Documentation
+## API Documentation & Deployment-Infrastucture
 
-For detailed information about the available APIs and their usage, refer to the [API Documentation](api-docs.md).
+For detailed information about the available APIs and their uses as well as deployment procedures and infrastructure used, see [IsyaratKu-Backend Wiki](https://github.com/IsyaratKu/isyaratku-backend/wiki).
 
-## Contributing
-
-If you would like to contribute to this project, please follow the [Contributing Guidelines](CONTRIBUTING.md).
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
+## Cloud Computing Team
+| Name       | Student ID   |
+|------------|--------------|
+| Danendra Herdiansyah   | C010D4KY0934     |
+| Muhammad Azka Obila Vasya | C006D4KY0767     |
