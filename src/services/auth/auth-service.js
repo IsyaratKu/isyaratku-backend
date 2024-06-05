@@ -5,7 +5,9 @@ const {
     signOut,
     sendEmailVerification,
     sendPasswordResetEmail,
-    db
+    db,
+    admin,
+    bucket
 } = require("../../config/firebase");
 
 const auth = getAuth();
@@ -140,6 +142,98 @@ class AuthService {
             console.error(error);
             res.status(500).json({ error: "Internal Server Error" });
         });
+    }
+
+    async changeUsername(req, res) {
+
+        const { oldUsername, newUsername } = req.body;
+        const user = req.user;
+        if (!user ||!oldUsername || !newUsername) {
+            return res.status(422).json({ error: "Invalid request" });
+        }
+
+        try {
+            const userRef = db.collection("users").doc(user.uid);
+            const userData = (await userRef.get()).data();
+
+            // Verifikasi username lama
+            if (userData.username !== oldUsername) {
+                return res.status(400).json({ error: "Old username does not match" });
+            }
+            await userRef.update({ username: newUsername });
+
+            res.status(200).json({ message: "Username updated successfully" });
+        } catch (error) {
+            console.error("Error updating username:", error);
+            res.status(500).json({ error: "Internal Server Error" });
+        }
+    }
+
+    async changeEmail(req, res) {
+        const user = req.user;
+        const { oldEmail, newEmail } = req.body;
+
+        if (!user || !oldEmail || !newEmail) {
+            return res.status(422).json({ error: "Invalid request" });
+        }
+
+        try {
+            const userRef = db.collection("users").doc(user.uid);
+            const userData = (await userRef.get()).data();
+
+            // Verifikasi email lama
+            if (userData.email !== oldEmail) {
+                return res.status(400).json({ error: "Old email does not match" });
+            }
+
+            await admin.auth().updateUser(user.uid, { email: newEmail });
+            await userRef.update({ email: newEmail });
+
+            res.status(200).json({ message: "Email updated successfully" });
+        } catch (error) {
+            console.error("Error updating email:", error);
+            res.status(500).json({ error: "Invalid request" });
+        }
+    }
+
+    async changePhotoProfile(req, res) {
+        const user = req.user;
+    
+        if (!user || !req.file) {
+            return res.status(422).json({ error: "Invalid request" });
+        }
+    
+        try {
+            const userRef = db.collection("users").doc(user.uid);
+            const userData = (await userRef.get()).data();
+            const oldPhotoURL = userData.url_photo;
+    
+            // Upload new photo
+            const fileName = `profile_pics/${user.uid}_${req.file.originalname}`;
+            const file = bucket.file(fileName);
+    
+            await file.save(req.file.buffer, {
+                contentType: req.file.mimetype,
+                predefinedAcl: 'publicRead'
+            });
+    
+            // Get URL of new photo
+            const newPhotoURL = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+    
+            // Update Firestore
+            await userRef.update({ url_photo: newPhotoURL });
+    
+            // Delete old photo if exists and is not empty or null
+            if (oldPhotoURL && oldPhotoURL.trim() !== "") {
+                const oldFileName = oldPhotoURL.split('/').pop();
+                await bucket.file(`profile_pics/${oldFileName}`).delete();
+            }
+    
+            res.status(200).json({ message: "Photo profile updated successfully", url_photo: newPhotoURL });
+        } catch (error) {
+            console.error("Error updating photo profile:", error);
+            res.status(500).json({ error: error.message });
+        }
     }
 }
 

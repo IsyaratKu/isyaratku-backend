@@ -1,9 +1,33 @@
 # isyaratku-backend
-This is a repository for IsyaratKu's backend APIs.
+Welcome to the repository of the IsyaratKu's backend Project. This documentation will guide you through understanding, setting up, developing, and maintaining the IsyaratKu Project. You will receive all the required knowledge and tools from this extensive guide.
 
-## Deployment
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Architecture](#architecture)
+3. [Prerequisites](#prerequisites)
+4. [Development](#development)
+5. [Project Structure](#project-structure)
+6. [API Documentation & Deployment-Infrastucture](#api-documentation--deployment-infrastucture)
+7. [Cloud Computing Team](#cloud-computing-team)
 
-To deploy the IsyaratKu backend APIs, follow these steps:
+
+## Introduction
+IsyaratKu is an Android app that uses machine learning to enhance accessibility for learning sign languages. It uses real-time hand gesture recognition and gamification elements to motivate continuous learning.
+
+## Architecture
+This is the architecture for this project.
+
+
+## Prerequisites
+Before you begin, ensure you have the following software installed:
+
+1. [Node.js](https://nodejs.org/en) (version 20.x or higher)
+2. [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+3. [Git](https://git-scm.com/)
+
+## Development
+
+To develop the IsyaratKu backend APIs, follow these steps:
 
 1. Clone the repository:
 
@@ -23,28 +47,111 @@ To deploy the IsyaratKu backend APIs, follow these steps:
     npm install
     ```
 
+    or
+
+    ```bash
+    yarn install
+    ```
+
 4. Configure the environment variables:
 
     - Create a `.env` file in the root directory.
     - Copy the content of `.env.example` into `.env`.
     - Update the values of the environment variables in `.env` as per your configuration.
+    
+    ```
+    # Example Environment Variables
+    
+    # Firebase Configuration
+    FIREBASE_API_KEY=yourapikey
+    FIREBASE_AUTH_DOMAIN=yourauthdomain
+    FIREBASE_PROJECT_ID=yourprojectid
+    FIREBASE_STORAGE_BUCKET=yourstoragebucket
+    FIREBASE_MESSAGING_SENDER_ID=yourmessagingsenderid
+    FIREBASE_APP_ID=yourappid
+    
+    # Service Account Configuration
+    SERVICE_ACCOUNT_TYPE=yourtype
+    SERVICE_ACCOUNT_PROJECT_ID=yourprojectid
+    SERVICE_ACCOUNT_PRIVATE_KEY_ID=yourprivatekeyid
+    SERVICE_ACCOUNT_PRIVATE_KEY=yourprivatekey
+    SERVICE_ACCOUNT_CLIENT_EMAIL=yourclientemail
+    SERVICE_ACCOUNT_CLIENT_ID=yourclientid
+    SERVICE_ACCOUNT_AUTH_URI=yourauthuri
+    SERVICE_ACCOUNT_AUTH_PROVIDER_X509_CERT_URL=yourauthproviderx509certurl
+    SERVICE_ACCOUNT_CLIENT_X509_CERT_URL=yourclientx509certurl
+    SERVICE_ACCOUNT_UNIVERSE_DOMAIN=youruniversedomain
+    ```
+
+    Or simply just do:
+    ```bash
+    cp .env.example .env
+    ```
+    then adjust the value with your configuration.
 
 5. Start the server:
 
     ```bash
-    npm start
+    npm run start:dev
     ```
 
-6. The backend APIs should now be accessible at `http://localhost:3000`.
+    or
+    ```bash
+    yarn start:dev
+    ```
 
-## API Documentation
+6. The backend APIs should now be accessible at `http://localhost:5000`.
 
-For detailed information about the available APIs and their usage, refer to the [API Documentation](api-docs.md).
+## Project Structure
+Below is an overview of the project's directory layout and a brief explanation of each component.
 
-## Contributing
+```
+isyaratku-backend/
+├── src/
+│   ├── config/
+│   │   └── firebase.js
+│   ├── middleware/
+│   ├── routes
+│   │   └── routes.js
+│   └── services
+│       └── auth
+│           └── auth-service.js
+├── .env
+├── .env.example
+├── .gitignore
+├── Dockerfile
+├── index.js
+├── package-lock.json
+├── package.json
+└── README.md
+```
 
-If you would like to contribute to this project, please follow the [Contributing Guidelines](CONTRIBUTING.md).
+### Root Directory
+- .env : Contains environment variables used in the project.
+- .gitignore : Specifies files and directories to be ignored by Git.
+- Dockerfile : Deployment configuration
+- index.js : Entry point for starting IsyaratKu Backend application
+- package-lock.json : List of project packages dependencies
+- package.json : Lists project dependencies and scripts.
+- README.md : Provides an overview of the project, setup instructions, and other essential information.
 
-## License
+### `src/`
+Main source directory of the project.
+- `config/` : contains the project configuration.
+    - `firebase.js`: Contains the configuration and initialization for Firebase SDK.
+- `middleware/`: Contains middleware functions of verifying token used in the project.
+- `routes/`: contains the project routing.
+    - `routes.js` : contains the routing logic for the IsyaratKu Backend application.
+- `services/` : contains the project service functions.
+    - `auth/`: contains the project authentication service.
+        - `auth-service.js` : contains the authentication logic and other user logic functions.
 
-This project is licensed under the [MIT License](LICENSE).
+## API Documentation & Deployment-Infrastucture
+
+For detailed information about the available APIs and their uses as well as deployment procedures and infrastructure used, see [IsyaratKu-Backend Wiki](https://github.com/IsyaratKu/isyaratku-backend/wiki).
+
+## Cloud Computing Team
+| Name       | Student ID   |
+|------------|--------------|
+| Danendra Herdiansyah   | C010D4KY0934     |
+| Muhammad Azka Obila Vasya | C006D4KY0767     |
