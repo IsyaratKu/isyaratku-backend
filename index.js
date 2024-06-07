@@ -1,13 +1,13 @@
 const express = require("express");
 const router = require("./src/routes/routes");
-const cookieParser = require("cookie-parser");
+const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 5000;
 
+app.use(cors());
 app.use(express.json());
-app.use(cookieParser());
 app.use(router);
 
 app.get("/", (req, res) => {

@@ -35,7 +35,7 @@ class AuthService {
                         res.status(201).json({ message: "Verification email sent! User created successfully!" });
                     })
                 .catch((error) => {
-                    console.error(error);
+                    console.error(error.message);
                     res.status(500).json({ error: "Error sending email verification" });
                 });
             })
@@ -54,32 +54,50 @@ class AuthService {
             });
         }
         signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => { 
-                const idToken = userCredential._tokenResponse.idToken
-                    if (idToken) {
-                    res.cookie('access_token', idToken, {
-                        httpOnly: true
+            .then(async (userCredential) => { 
+                const idToken = await userCredential.user.getIdToken();
+                if (idToken) {
+                    res.status(200).json({ 
+                        message: "User logged in successfully", 
+                        token: idToken, 
+                        user: {
+                            uid: userCredential.user.uid,
+                            email: userCredential.user.email,
+                            emailVerified: userCredential.user.emailVerified,
+                            isAnonymous: userCredential.user.isAnonymous
+                        }
                     });
-                    res.status(200).json({ message: "User logged in successfully", user: userCredential.user });
+                    if (!userCredential.user.emailVerified) {
+                        sendEmailVerification(auth.currentUser)
+                        .then(() => {
+                            console.log("Verification email sent!");
+                        })
+                        .catch((error) => {
+                            console.error(error.message);
+                        });
+                    }
                 } else {
                     res.status(500).json({ error: "Internal Server Error" });
                 }
             })
-        .catch((error) => {
-            console.error(error);
-            const errorMessage = error.message || "An error occurred while logging in";
-            res.status(500).json({ error: errorMessage });
-        });
+            .catch((error) => {
+                console.error(error.message);
+                const errorMessage = error.message || "An error occurred while logging in";
+                res.status(500).json({ error: errorMessage });
+            });
     }
 
     logout(req, res) {
+        const user = auth.currentUser;
+        if (!user) {
+            return res.status(401).json({ error: "No user logged in" });
+        }
         signOut(auth)
         .then(() => {
-                res.clearCookie('access_token');
                 res.status(200).json({ message: "User logged out successfully" });
         })
         .catch((error) => {
-            console.error(error);
+            console.error(error.message);
             res.status(500).json({ error: "Internal Server Error" });
         });
     }
@@ -97,28 +115,28 @@ class AuthService {
             res.status(200).json({ message: "Password reset email sent successfully!" });
         })
         .catch((error) => {
-            console.error(error);
+            console.error(error.message);
             res.status(500).json({ error: "Internal Server Error" });
         });
     }
 
     getUserInfo(req, res) {
         const user = auth.currentUser;
-        if (user) {
-            const user_ref = db.collection("users").doc(user.uid);
-            user_ref.get().then((user_info) => {
-                if (!user_info.exists) {
-                    res.status(404).json({ error: "User not found" });
-                } else {
-                    res.status(200).json({ user: user_info.data() });
-                }
-            }).catch((error) => {
-                console.error(error);
-                res.status(500).json({ error: "Internal Server Error" });
-            });
-        } else {
-            res.status(401).json({ error: "No user signed in" });
+        if (!user) {
+            return res.status(401).json({ error: "No user logged in" });
         }
+        const user_ref = db.collection("users").doc(user.uid);
+        user_ref.get().then((user_info) => {
+            if (!user_info.exists) {
+                res.status(404).json({ error: "User not found" });
+            } else {
+                res.status(200).json({ user: user_info.data() });
+            }
+        }).catch((error) => {
+            console.error(error.message);
+            res.status(500).json({ error: "Internal Server Error" });
+        });
+
     }
 
     getAllUserScores(req, res) {
@@ -139,44 +157,51 @@ class AuthService {
             res.status(200).json({ users: users });
         })
         .catch((error) => {
-            console.error(error);
+            console.error(error.message);
             res.status(500).json({ error: "Internal Server Error" });
         });
     }
 
     async changeUsername(req, res) {
-
+        const user = auth.currentUser;
+        if (!user) {
+            return res.status(401).json({ error: "No user logged in" });
+        }
         const { oldUsername, newUsername } = req.body;
-        const user = req.user;
-        if (!user ||!oldUsername || !newUsername) {
+        if (!oldUsername || !newUsername) {
             return res.status(422).json({ error: "Invalid request" });
         }
-
         try {
             const userRef = db.collection("users").doc(user.uid);
             const userData = (await userRef.get()).data();
-
+            
             // Verifikasi username lama
             if (userData.username !== oldUsername) {
                 return res.status(400).json({ error: "Old username does not match" });
             }
-            await userRef.update({ username: newUsername });
+            if (userData.username === newUsername) {
+                return res.status(400).json({ error: "New username is the same as the old one" });
+            }
 
+            await userRef.update({ username: newUsername });
             res.status(200).json({ message: "Username updated successfully" });
         } catch (error) {
-            console.error("Error updating username:", error);
+            console.error("Error updating username:", error.message);
             res.status(500).json({ error: "Internal Server Error" });
         }
     }
 
     async changeEmail(req, res) {
-        const user = req.user;
-        const { oldEmail, newEmail } = req.body;
-
-        if (!user || !oldEmail || !newEmail) {
-            return res.status(422).json({ error: "Invalid request" });
+        const user = auth.currentUser;
+        
+        if (!user) {
+            return res.status(401).json({ error: "No user logged in" });
         }
 
+        const { oldEmail, newEmail } = req.body;
+        if (!oldEmail || !newEmail) {
+            return res.status(422).json({ error: "Invalid request" });
+        }
         try {
             const userRef = db.collection("users").doc(user.uid);
             const userData = (await userRef.get()).data();
@@ -185,21 +210,29 @@ class AuthService {
             if (userData.email !== oldEmail) {
                 return res.status(400).json({ error: "Old email does not match" });
             }
+            if (userData.email === newEmail) {
+                return res.status(400).json({ error: "New email is the same as the old one" });
+            }
 
-            await admin.auth().updateUser(user.uid, { email: newEmail });
-            await userRef.update({ email: newEmail });
+            await admin.auth().updateUser(user.uid, { email: newEmail, emailVerified: false});
+            await db.collection("users").doc(user.uid).update({ email: newEmail });
 
-            res.status(200).json({ message: "Email updated successfully" });
+
+            res.status(200).json({ message: "Email updated successfully!" });
         } catch (error) {
-            console.error("Error updating email:", error);
-            res.status(500).json({ error: "Invalid request" });
+            console.error("Error updating email:", error.message);
+            res.status(500).json({ error: "Internal Server Error" });
         }
     }
 
     async changePhotoProfile(req, res) {
-        const user = req.user;
-    
-        if (!user || !req.file) {
+        const user = auth.currentUser;
+        
+        if (!user) {
+            return res.status(401).json({ error: "No user logged in" });
+        }
+
+        if (!req.file) {
             return res.status(422).json({ error: "Invalid request" });
         }
     
@@ -231,7 +264,7 @@ class AuthService {
     
             res.status(200).json({ message: "Photo profile updated successfully", url_photo: newPhotoURL });
         } catch (error) {
-            console.error("Error updating photo profile:", error);
+            console.error("Error updating photo profile:", error.message);
             res.status(500).json({ error: error.message });
         }
     }
