@@ -7,16 +7,24 @@ const calculateASLScore = (sentence) => {
     return Math.max(1, Math.min(100, score));
 };
 
-const aslSentencesPath = path.join(__dirname, '../../data/asl-sentences.json');
+const aslIndoSentencesPath = path.join(__dirname, '../../data/asl-indo-sentences.json');
+const aslEngSentencesPath = path.join(__dirname, '../../data/asl-eng-sentences.json');
 
-const loadASLSentences = () => {
-    const data = fs.readFileSync(aslSentencesPath, 'utf8');
+const loadASLSentences = (filePath) => {
+    const data = fs.readFileSync(filePath, 'utf8');
     return JSON.parse(data).sentences;
 };
 
+const loadAllASLSentences = () => {
+    const indoSentences = loadASLSentences(aslIndoSentencesPath);
+    const engSentences = loadASLSentences(aslEngSentencesPath);
+    return [...indoSentences, ...engSentences];
+    
+};
+
 const getASLRandomSentences = (req, res) => {
-    try{
-        const sentences = loadASLSentences();
+    try {
+        const sentences = loadAllASLSentences();
         const randomIndex = Math.floor(Math.random() * sentences.length);
         const sentence = sentences[randomIndex];
         const score = calculateASLScore(sentence);
@@ -30,7 +38,6 @@ const getASLRandomSentences = (req, res) => {
         });
     }
 };
-
 
 module.exports = {
     getASLRandomSentences
