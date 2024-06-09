@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authService = require('../services/auth/auth-service');
+const aslService = require('../services/sign-challenge/asl-service');
 const verifyToken = require('../middleware/index');
 const multer = require('multer');
 const upload = multer({ storage:multer.memoryStorage()});
@@ -14,5 +15,6 @@ router.get('/leaderboard', authService.getAllUserScores);
 router.put('/change-username', verifyToken, authService.changeUsername);
 router.put('/change-email', verifyToken, authService.changeEmail);
 router.put('/change-photo', verifyToken, upload.single('newPhoto'), authService.changePhotoProfile);
+router.get('/random-asl-sentence', aslService.getASLRandomSentences);
 
 module.exports = router;
