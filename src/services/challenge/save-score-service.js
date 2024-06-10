@@ -12,8 +12,8 @@ class UpdateScoreService {
             return res.status(401).json({ error: "No user logged in" });
         }
 
-        const { score } = req.body;
-        if (!score) {
+        const { asl_score } = req.body;
+        if (!asl_score) {
             return res.status(400).json({ error: "Score is required" });
         }
         
@@ -25,11 +25,11 @@ class UpdateScoreService {
                 return res.status(404).json({ error: "User not found" });
             }
             
-            const oldScore = userData.score;
-            const newScore = parseInt(score) + parseInt(oldScore);
+            const oldASLScore = userData.asl_score;
+            const newASLScore = parseInt(asl_score) + parseInt(oldASLScore);
 
             await userRef.update({
-                score : newScore
+                asl_score : newASLScore
             });
 
             return res.status(200).json({ message: "Score saved successfully!" });

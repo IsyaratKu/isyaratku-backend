@@ -13,7 +13,7 @@ const {
 const auth = getAuth();
 
 class AuthService {
-    register(req, res) {
+    async register(req, res) {
         const { email, password, username } = req.body;
         if (!email || !password) {
             return res.status(422).json({
@@ -27,7 +27,8 @@ class AuthService {
                     username: username,
                     email: userCredential.user.email,
                     createdAt: new Date(),
-                    score: 0,
+                    asl_score: 0,
+                    bisindo_score : 0,
                     url_photo: "",
                 })
                 sendEmailVerification(auth.currentUser)
@@ -45,7 +46,7 @@ class AuthService {
         });
     }
 
-    login(req, res) {
+    async login(req, res) {
         const { email, password } = req.body;
         if (!email || !password) {
             return res.status(422).json({
@@ -87,7 +88,7 @@ class AuthService {
             });
     }
 
-    logout(req, res) {
+    async logout(req, res) {
         const user = auth.currentUser;
         if (!user) {
             return res.status(401).json({ error: "No user logged in" });
@@ -103,7 +104,7 @@ class AuthService {
     }
 
 
-    resetPassword(req, res){
+    async resetPassword(req, res){
         const { email } = req.body;
         if (!email ) {
             return res.status(422).json({
@@ -120,7 +121,7 @@ class AuthService {
         });
     }
 
-    getUserInfo(req, res) {
+    async getUserInfo(req, res) {
         const user = auth.currentUser;
         if (!user) {
             return res.status(401).json({ error: "No user logged in" });
@@ -139,8 +140,8 @@ class AuthService {
 
     }
 
-    getAllUserScores(req, res) {
-        db.collection("users").where("score", ">", 0).orderBy("score", "desc").get()
+    async getAllUserScores(req, res) {
+        db.collection("users").where("asl_score", ">", 0).orderBy("asl_score", "desc").get()
         .then((snapshot) => {
             if (snapshot.empty) {
                 return res.status(200).json({ error: "No users found" });
@@ -150,7 +151,7 @@ class AuthService {
                 const userData = doc.data();
                 users.push({
                     username: userData.username,
-                    score: userData.score,
+                    asl_score: userData.asl_score,
                     url_photo: userData.url_photo,
                 });
             });
