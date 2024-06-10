@@ -46,7 +46,7 @@ class AuthService {
         });
     }
 
-    login(req, res) {
+    async login(req, res) {
         const { email, password } = req.body;
         if (!email || !password) {
             return res.status(422).json({
@@ -88,7 +88,7 @@ class AuthService {
             });
     }
 
-    logout(req, res) {
+    async logout(req, res) {
         const user = auth.currentUser;
         if (!user) {
             return res.status(401).json({ error: "No user logged in" });
@@ -104,7 +104,7 @@ class AuthService {
     }
 
 
-    resetPassword(req, res){
+    async resetPassword(req, res){
         const { email } = req.body;
         if (!email ) {
             return res.status(422).json({
@@ -121,7 +121,7 @@ class AuthService {
         });
     }
 
-    getUserInfo(req, res) {
+    async getUserInfo(req, res) {
         const user = auth.currentUser;
         if (!user) {
             return res.status(401).json({ error: "No user logged in" });
@@ -140,7 +140,7 @@ class AuthService {
 
     }
 
-    getAllUserScores(req, res) {
+    async getAllUserScores(req, res) {
         db.collection("users").where("asl_score", ">", 0).orderBy("asl_score", "desc").get()
         .then((snapshot) => {
             if (snapshot.empty) {
