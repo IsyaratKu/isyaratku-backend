@@ -18,5 +18,6 @@ router.put('/auth/change-photo', verifyToken, upload.single('newPhoto'), authSer
 router.get('/challenge/leaderboard', authService.getAllUserScores);
 router.get('/challenge/random-asl-sentence', aslService.getASLRandomSentences);
 router.put('/challenge/update-asl-score', verifyToken, saveScoreService.updateASLScore);
+router.put('/challenge/update-bisindo-score', verifyToken, saveScoreService.updateBisindoScore);
 
 module.exports = router;
