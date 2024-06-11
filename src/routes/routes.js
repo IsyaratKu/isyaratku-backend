@@ -17,6 +17,6 @@ router.put('/auth/change-email', verifyToken, authService.changeEmail);
 router.put('/auth/change-photo', verifyToken, upload.single('newPhoto'), authService.changePhotoProfile);
 router.get('/challenge/leaderboard', authService.getAllUserScores);
 router.get('/challenge/random-asl-sentence', aslService.getASLRandomSentences);
-router.put('/challenge/update-score', verifyToken, saveScoreService.updateScore);
+router.put('/challenge/update-asl-score', verifyToken, saveScoreService.updateASLScore);
 
 module.exports = router;
