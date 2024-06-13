@@ -1,3 +1,8 @@
+<h1 align="center">
+  <br>
+    <img src="assets/IsyaratKu-logo.png" alt="IsyaratKu" width="200">
+</h1>
+
 # isyaratku-backend
 Welcome to the repository of the IsyaratKu's backend Project. This documentation will guide you through understanding, setting up, developing, and maintaining the IsyaratKu Project. You will receive all the required knowledge and tools from this extensive guide.
 
@@ -15,8 +20,7 @@ Welcome to the repository of the IsyaratKu's backend Project. This documentation
 IsyaratKu is an Android app that uses machine learning to enhance accessibility for learning sign languages. It uses real-time hand gesture recognition and gamification elements to motivate continuous learning.
 
 ## Architecture
-This is the architecture for this project.
-
+![Architecture](assets/IsyaratKu-architecture.png)
 
 ## Prerequisites
 Before you begin, ensure you have the following software installed:
@@ -107,15 +111,25 @@ Below is an overview of the project's directory layout and a brief explanation o
 
 ```
 isyaratku-backend/
+├── assets/
+│   ├── IsyaratKu-architecture.png
+│   └── IsyaratKu-logo.png
 ├── src/
 │   ├── config/
 │   │   └── firebase.js
+│   ├── data/
+│   │   ├── asl-sentences.json
+│   │   └── bisindo-sentences.json
 │   ├── middleware/
 │   ├── routes
 │   │   └── routes.js
 │   └── services
-│       └── auth
-│           └── auth-service.js
+│       ├── auth
+│       │   └── auth-service.js
+│       └── challenge
+│           ├── asl-service.js
+│           ├── bisindo-service.js
+│           └── save-score-service.js
 ├── .env
 ├── .env.example
 ├── .gitignore
@@ -134,17 +148,25 @@ isyaratku-backend/
 - package-lock.json : List of project packages dependencies
 - package.json : Lists project dependencies and scripts.
 - README.md : Provides an overview of the project, setup instructions, and other essential information.
+- assets/ : Provides the logo and architecture image for IsyaratKu
 
 ### `src/`
 Main source directory of the project.
 - `config/` : contains the project configuration.
-    - `firebase.js`: Contains the configuration and initialization for Firebase SDK.
+    - `firebase.js`: contains the configuration and initialization for Firebase SDK.
+- `data/` : contains the project sentences dataset.
+    - `asl-sentences.json` : contains the English sentence dataset for ASL challenge.
+    - `bisindo-sentences.json` : contains the Indonesian sentence dataset for Bisindo challenge.
 - `middleware/`: Contains middleware functions of verifying token used in the project.
 - `routes/`: contains the project routing.
     - `routes.js` : contains the routing logic for the IsyaratKu Backend application.
 - `services/` : contains the project service functions.
     - `auth/`: contains the project authentication service.
         - `auth-service.js` : contains the authentication logic and other user logic functions.
+    - `challenge/` : contains the project challenge service.
+        - `asl-service.js` : contains the ASL challenge service logic.
+        - `bisindo-service.js` : contains the Bisindo challenge service logic.
+        - `save-score-service.js` : contains the update of ASL and Bisindo score for user database.
 
 ## API Documentation & Deployment-Infrastucture
 
