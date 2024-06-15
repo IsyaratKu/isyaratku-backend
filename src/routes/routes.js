@@ -18,7 +18,6 @@ router.get('/auth/user-info', verifyToken, authService.getUserInfo);
 router.put('/auth/change-username', verifyToken, authService.changeUsername);
 router.put('/auth/change-email', verifyToken, authService.changeEmail);
 router.put('/auth/change-photo', verifyToken, upload.single('newPhoto'), authService.changePhotoProfile);
-router.get('/challenge/leaderboard', authService.getAllUserScores);
 router.get('/challenge/random-asl-sentence', aslService.getASLRandomSentences);
 router.get('/challenge/random-bisindo-sentence', bisindoService.getBisindoRandomSentences);
 router.get('/challenge/leaderboard-asl', verifyToken, leaderboardService.getASLLeaderboard);
