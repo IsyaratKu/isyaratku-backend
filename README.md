@@ -128,7 +128,8 @@ isyaratku-backend/
 │       │   └── auth-service.js
 │       └── challenge
 │           ├── asl-service.js
-│           ├── bisindo-service.js
+|           ├── bisindo-service.js
+│           ├── leaderboard-service.js
 │           └── save-score-service.js
 ├── .env
 ├── .env.example
@@ -166,6 +167,7 @@ Main source directory of the project.
     - `challenge/` : contains the project challenge service.
         - `asl-service.js` : contains the ASL challenge service logic.
         - `bisindo-service.js` : contains the Bisindo challenge service logic.
+        - `leaderboard-service.js` : contains rank of score of ASL and Bisindo for user.
         - `save-score-service.js` : contains the update of ASL and Bisindo score for user database.
 
 ## API Documentation & Deployment-Infrastucture
