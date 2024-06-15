@@ -140,29 +140,6 @@ class AuthService {
 
     }
 
-    async getAllUserScores(req, res) {
-        db.collection("users").where("asl_score", ">", 0).orderBy("asl_score", "desc").get()
-        .then((snapshot) => {
-            if (snapshot.empty) {
-                return res.status(200).json({ error: "No users found" });
-            }
-            const users = [];
-            snapshot.forEach((doc) => {
-                const userData = doc.data();
-                users.push({
-                    username: userData.username,
-                    asl_score: userData.asl_score,
-                    url_photo: userData.url_photo,
-                });
-            });
-            res.status(200).json({ users: users });
-        })
-        .catch((error) => {
-            console.error(error.message);
-            res.status(500).json({ error: "Internal Server Error" });
-        });
-    }
-
     async changeUsername(req, res) {
         const user = auth.currentUser;
         if (!user) {
