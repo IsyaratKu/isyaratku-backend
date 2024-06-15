@@ -1,32 +1,32 @@
 const fs = require('fs');
 const path = require('path');
 
-const aslSentencesPath = path.join(__dirname, '../../data/asl-sentences.json');
+const bisindoSentencesPath = path.join(__dirname, '../../data/bisindo-sentences.json');
 
-class ASLService{
+class BisindoService{
     constructor() {
-        this.calculateASLScore = this.calculateASLScore.bind(this);
-        this.loadASLSentences = this.loadASLSentences.bind(this);
-        this.getASLRandomSentences = this.getASLRandomSentences.bind(this);
+        this.calculateBisindoScore = this.calculateBisindoScore.bind(this);
+        this.loadBisindoSentences = this.loadBisindoSentences.bind(this);
+        this.getBisindoRandomSentences = this.getBisindoRandomSentences.bind(this);
     }
 
-    async calculateASLScore(sentence) {
+    async calculateBisindoScore(sentence) {
         const WEIGHT_FACTOR = 1;
         const score = Math.floor(sentence.length * WEIGHT_FACTOR);
         return Math.max(1, Math.min(100, score));
     }
 
-    async loadASLSentences() {
-        const data = fs.readFileSync(aslSentencesPath, 'utf8');
+    async loadBisindoSentences() {
+        const data = fs.readFileSync(bisindoSentencesPath, 'utf8');
         return JSON.parse(data).sentences;
     }
 
-    async getASLRandomSentences(req, res) {
+    async getBisindoRandomSentences(req, res) {
         try {
-            const sentences = await this.loadASLSentences();
+            const sentences = await this.loadBisindoSentences();
             const randomIndex = Math.floor(Math.random() * sentences.length);
             const sentence = sentences[randomIndex];
-            const score = await this.calculateASLScore(sentence);
+            const score = await this.calculateBisindoScore(sentence);
             return res.status(200).json({
                 sentence,
                 score
@@ -40,4 +40,4 @@ class ASLService{
     }
 }
 
-module.exports = new ASLService();
+module.exports = new BisindoService();
